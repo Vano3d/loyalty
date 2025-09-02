@@ -24,6 +24,7 @@ table {
   border-collapse: collapse;
   background: #fff;
   border-radius: 8px;
+  width: 100%;
 }
 
 th, td {
@@ -43,7 +44,7 @@ td:first-child {
 }
 
 td:nth-child(3) {
-  width: 720px;   /* Увеличена ширина для столбца преимуществ */
+  width: 700px;   /* Увеличена ширина для столбца преимуществ */
   min-width: 480px;
   max-width: 800px;
 }
@@ -52,7 +53,7 @@ td:nth-child(3) {
   min-height: 54px;
   min-width: 460px;  /* Увеличена минимальная ширина */
   width: 100%;
-  max-width: 720px;  /* Увеличена максимальная ширина */
+  max-width: 700px;  /* Увеличена максимальная ширина */
   border: 2px dashed #ccc;
   border-radius: 6px;
   margin: 3px 0;
@@ -195,4 +196,174 @@ td:nth-child(3) {
   background-color: #b34b4f;
   box-shadow: 0 2px 4px rgba(179, 75, 79, 0.7);
   transform: translateY(1px);
+}
+
+/* Адаптивные стили для планшетов */
+@media (max-width: 1024px) {
+  .loyalty-builder {
+    gap: 24px;
+  }
+  
+  td:nth-child(3) {
+    width: 500px;
+    min-width: 350px;
+    max-width: 600px;
+  }
+  
+  .dropzone {
+    min-width: 320px;
+    max-width: 500px;
+  }
+  
+  .perks-column {
+    min-width: 325px;
+  }
+}
+
+/* Адаптивные стили для мобильных устройств */
+@media (max-width: 768px) {
+  body {
+    padding: 15px;
+    font-size: 16px; /* Увеличен базовый размер шрифта */
+  }
+  
+  h1 {
+    font-size: 28px; /* Увеличен размер заголовка */
+    margin-bottom: 20px;
+  }
+  
+  h2 {
+    font-size: 22px; /* Увеличен размер подзаголовка */
+    margin-bottom: 15px;
+  }
+  
+  .loyalty-builder {
+    flex-direction: column-reverse; /* Перемещаем набор преимуществ вниз */
+    gap: 20px;
+    align-items: stretch;
+  }
+  
+  table {
+    font-size: 16px; /* Увеличен размер шрифта в таблице */
+    border-radius: 6px;
+  }
+  
+  th {
+    font-size: 18px; /* Увеличен размер шрифта заголовков */
+    padding: 12px 15px;
+  }
+  
+  td {
+    padding: 12px 15px;
+  }
+  
+  td:first-child {
+    font-size: 16px;
+    font-weight: 600;
+  }
+  
+  td:nth-child(3) {
+    width: auto;
+    min-width: auto;
+    max-width: none;
+  }
+  
+  .dropzone {
+    min-width: auto;
+    max-width: none;
+    min-height: 60px;
+    padding: 12px 10px;
+    gap: 10px;
+  }
+  
+  .perks-column {
+    min-width: auto;
+    width: 100%;
+  }
+  
+  #perks-list {
+    padding: 15px;
+    margin-bottom: 15px;
+  }
+  
+  .perk {
+    font-size: 16px; /* Увеличен размер шрифта плашек */
+    padding: 8px 16px; /* Увеличен padding для лучшего тапа */
+    margin: 4px 6px 4px 0;
+    min-height: 20px;
+    display: inline-flex;
+    align-items: center;
+  }
+  
+  .perk .edit, .perk .delete {
+    font-size: 16px; /* Увеличен размер иконок */
+    margin-left: 10px;
+  }
+  
+  .in-dropzone .perk .remove {
+    font-size: 18px; /* Увеличен размер кнопки удаления */
+    margin-left: 10px;
+  }
+  
+  #add-perk-btn {
+    font-size: 18px; /* Увеличен размер кнопки */
+    padding: 12px 24px;
+    margin-top: 15px;
+    width: 100%;
+    text-align: center;
+  }
+  
+  #add-perk-form {
+    padding: 15px;
+    margin-top: 15px;
+  }
+  
+  #add-perk-form input, #add-perk-form select {
+    font-size: 16px; /* Увеличен размер шрифта в формах */
+    padding: 8px 12px;
+    margin: 5px 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  #add-perk-form button {
+    font-size: 16px; /* Увеличен размер кнопок */
+    padding: 8px 16px;
+    margin: 5px 5px 0 0;
+    min-width: 80px;
+  }
+}
+
+/* Дополнительные стили для очень маленьких экранов */
+@media (max-width: 480px) {
+  body {
+    padding: 10px;
+  }
+  
+  h1 {
+    font-size: 24px;
+  }
+  
+  h2 {
+    font-size: 20px;
+  }
+  
+  th, td {
+    padding: 10px 8px;
+  }
+  
+  .perk {
+    font-size: 15px;
+    padding: 6px 12px;
+  }
+  
+  #add-perk-form input, #add-perk-form select {
+    font-size: 15px;
+  }
+  
+  #add-perk-form button {
+    font-size: 15px;
+    width: 100%;
+    margin: 5px 0;
+  }
 }

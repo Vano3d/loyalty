@@ -66,6 +66,27 @@ function resetToDefaults() {
   }
 }
 
+// Функция удаления преимущества
+function deletePerk(perkId) {
+  const perk = perks.find(p => p.id === perkId);
+  if (!perk) return;
+  
+  if (confirm(`Вы уверены, что хотите удалить преимущество "${perk.text}"?\nОно будет удалено из всех уровней.`)) {
+    // Удаляем из основного массива
+    perks = perks.filter(p => p.id !== perkId);
+    
+    // Удаляем из всех уровней
+    levelPerks = levelPerks.map(level => level.filter(id => id !== perkId));
+    
+    // Сохраняем изменения
+    saveToLocalStorage();
+    
+    // Перерендериваем интерфейс
+    renderPerksList();
+    renderDropzones();
+  }
+}
+
 // Рендеринг набора преимуществ
 function renderPerksList() {
   const list = document.getElementById('perks-list');
@@ -76,10 +97,20 @@ function renderPerksList() {
     el.setAttribute('draggable', true);
     el.dataset.id = perk.id;
     el.dataset.source = "perks-list";
-    el.innerHTML = `${perk.text} <span class="edit" title="Редактировать">&#9998;</span>`;
+    el.innerHTML = `${perk.text} <span class="edit" title="Редактировать">&#9998;</span> <span class="delete" title="Удалить">🗑</span>`;
     el.addEventListener('dragstart', handleDragStart);
     el.addEventListener('dragend', handleDragEnd);
-    el.querySelector('.edit').onclick = () => openEditPerk(perk.id);
+    
+    // Обработчики для кнопок
+    el.querySelector('.edit').onclick = (e) => {
+      e.stopPropagation();
+      openEditPerk(perk.id);
+    };
+    el.querySelector('.delete').onclick = (e) => {
+      e.stopPropagation();
+      deletePerk(perk.id);
+    };
+    
     list.appendChild(el);
   });
 }
@@ -99,7 +130,10 @@ function renderDropzones() {
       el.dataset.source = "dropzone";
       el.dataset.level = idx;
       el.setAttribute('draggable', true);
-      el.querySelector('.remove').onclick = () => removePerkFromLevel(idx, perk.id);
+      el.querySelector('.remove').onclick = (e) => {
+        e.stopPropagation();
+        removePerkFromLevel(idx, perk.id);
+      };
       el.addEventListener('dragstart', handleDragStart);
       el.addEventListener('dragend', handleDragEnd);
       zone.appendChild(el);
@@ -206,3 +240,4 @@ renderDropzones();
 
 // Добавляем кнопку для сброса данных (опционально)
 // Можно добавить в HTML: <button onclick="resetToDefaults()">Сбросить к умолчанию</button>
+

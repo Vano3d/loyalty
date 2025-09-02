@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Конструктор программы лояльности Unicorn</title>
+  <link rel="stylesheet" href="loyalty.css">
+</head>
+<body>
+  <h1>Программа лояльности <span class="brand">Unicorn</span></h1>
+  <div class="loyalty-builder">
+    <table>
+      <thead>
+        <tr>
+          <th>Уровень</th>
+          <th>Действие</th>
+          <th>Преимущества</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Без&nbsp;уровня</td>
+          <td>Только что зарегистрировался</td>
+          <td>
+            <div class="dropzone" data-id="0"></div>
+          </td>
+        </tr>
+        <tr>
+          <td>Новичок</td>
+          <td>1-я покупка</td>
+          <td>
+            <div class="dropzone" data-id="1"></div>
+          </td>
+        </tr>
+        <tr>
+          <td>Модник</td>
+          <td>2 покупки</td>
+          <td>
+            <div class="dropzone" data-id="2"></div>
+          </td>
+        </tr>
+        <tr>
+          <td>Шопоголик</td>
+          <td>3 покупки</td>
+          <td>
+            <div class="dropzone" data-id="3"></div>
+          </td>
+        </tr>
+        <tr>
+          <td>Фэшн Киллер</td>
+          <td>4+ покупок</td>
+          <td>
+            <div class="dropzone" data-id="4"></div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="perks-column">
+      <h2>Набор преимуществ</h2>
+      <div id="perks-list"></div>
+      <button id="add-perk-btn">+ Добавить</button>
+      <div id="add-perk-form" style="display:none;">
+        <input type="text" id="perk-text" placeholder="Текст плашки">
+        <select id="perk-color">
+          <option value="perk-red">Красный</option>
+          <option value="perk-yellow">Жёлтый</option>
+          <option value="perk-gray">Cерый</option>
+        </select>
+        <button id="save-perk-btn">OK</button>
+        <button id="cancel-perk-btn">Отмена</button>
+      </div>
+    </div>
+  </div>
+  <script src="loyalty.js"></script>
+</body>
+</html>

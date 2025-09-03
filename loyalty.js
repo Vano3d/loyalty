@@ -1,4 +1,6 @@
-// Перечень преимуществ: id, текст, цвет
+const SERVER_URL = 'https://loyalty-9zup.onrender.com/data';
+
+// Глобальные переменные для преимуществ и состояний по уровням
 let perks = [
   {id: 1, text: "мерч Unicorn", color: "perk-red"},
   {id: 2, text: "Экскурсия в офис Unicorn", color: "perk-red"},
@@ -20,49 +22,42 @@ let perks = [
   {id: 18, text: "кэшбек 400 руб.", color: "perk-gray"}
 ];
 
-// Состояния прикрепленных преимуществ по уровням
 let levelPerks = [
-  [14],                               // Без уровня
-  [15, 10],                           // Новичок
-  [11, 16],                                 // Модник
-  [17, 3, 10],                            // Шопоголик
-  [18]                                  // Фэшн Киллер
+  [14],               // Без уровня
+  [15, 10],           // Новичок
+  [11, 16],           // Модник
+  [17, 3, 10],        // Шопоголик
+  [18]                // Фэшн Киллер
 ];
 
-// Функции для работы с localStorage
-function saveToLocalStorage() {
+// Загрузка данных с сервера
+async function loadFromServer() {
   try {
-    localStorage.setItem('loyalty_perks', JSON.stringify(perks));
-    localStorage.setItem('loyalty_levelPerks', JSON.stringify(levelPerks));
+    const response = await fetch(SERVER_URL);
+    if (!response.ok) throw new Error('Ошибка загрузки с сервера');
+    const data = await response.json();
+    perks = data.perks;
+    levelPerks = data.levelPerks;
+    renderPerksList();
+    renderDropzones();
   } catch (error) {
-    console.error('Ошибка сохранения в localStorage:', error);
+    console.error('Ошибка загрузки:', error);
+    // При ошибке показываем локальные данные
+    renderPerksList();
+    renderDropzones();
   }
 }
 
-function loadFromLocalStorage() {
+// Сохранение данных на сервер
+async function saveToServer() {
   try {
-    const savedPerks = localStorage.getItem('loyalty_perks');
-    const savedLevelPerks = localStorage.getItem('loyalty_levelPerks');
-    
-    if (savedPerks) {
-      perks = JSON.parse(savedPerks);
-    }
-    
-    if (savedLevelPerks) {
-      levelPerks = JSON.parse(savedLevelPerks);
-    }
+    await fetch(SERVER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ perks, levelPerks })
+    });
   } catch (error) {
-    console.error('Ошибка загрузки из localStorage:', error);
-    // В случае ошибки используем значения по умолчанию
-  }
-}
-
-// Функция для сброса данных к значениям по умолчанию
-function resetToDefaults() {
-  if (confirm('Вы уверены, что хотите сбросить все данные к значениям по умолчанию?')) {
-    localStorage.removeItem('loyalty_perks');
-    localStorage.removeItem('loyalty_levelPerks');
-    location.reload();
+    console.error('Ошибка сохранения:', error);
   }
 }
 
@@ -74,13 +69,10 @@ function deletePerk(perkId) {
   if (confirm(`Вы уверены, что хотите удалить преимущество "${perk.text}"?\nОно будет удалено из всех уровней.`)) {
     // Удаляем из основного массива
     perks = perks.filter(p => p.id !== perkId);
-    
     // Удаляем из всех уровней
     levelPerks = levelPerks.map(level => level.filter(id => id !== perkId));
-    
     // Сохраняем изменения
-    saveToLocalStorage();
-    
+    saveToServer();
     // Перерендериваем интерфейс
     renderPerksList();
     renderDropzones();
@@ -100,7 +92,6 @@ function renderPerksList() {
     el.innerHTML = `${perk.text} <span class="edit" title="Редактировать">&#9998;</span> <span class="delete" title="Удалить">🗑</span>`;
     el.addEventListener('dragstart', handleDragStart);
     el.addEventListener('dragend', handleDragEnd);
-    
     // Обработчики для кнопок
     el.querySelector('.edit').onclick = (e) => {
       e.stopPropagation();
@@ -110,7 +101,6 @@ function renderPerksList() {
       e.stopPropagation();
       deletePerk(perk.id);
     };
-    
     list.appendChild(el);
   });
 }
@@ -122,7 +112,7 @@ function renderDropzones() {
     zone.classList.add('in-dropzone');
     (levelPerks[idx] || []).forEach(perkId => {
       let perk = perks.find(p => p.id === perkId);
-      if (!perk) return; // на случай сбоя индексов
+      if (!perk) return;
       const el = document.createElement('div');
       el.className = `perk ${perk.color}`;
       el.innerHTML = `${perk.text} <span class="remove" title="Убрать">×</span>`;
@@ -150,18 +140,15 @@ function renderDropzones() {
       let fromLevel = evt.dataTransfer.getData('levelIdx');
       if (fromLevel && fromLevel !== '' && +fromLevel !== idx) {
         fromLevel = +fromLevel;
-        // Удалить из старого
         levelPerks[fromLevel] = levelPerks[fromLevel].filter(id => id !== perkId);
-        // Добавить в новый, если ещё не добавили
         if (!levelPerks[idx].includes(perkId)) {
           levelPerks[idx].push(perkId);
         }
-        saveToLocalStorage(); // Сохраняем изменения
+        saveToServer();
         renderDropzones();
       } else if (!levelPerks[idx].includes(perkId)) {
-        // Добавление из правого набора (перетаскивание копии из perks-list)
         levelPerks[idx].push(perkId);
-        saveToLocalStorage(); // Сохраняем изменения
+        saveToServer();
         renderDropzones();
       }
     }
@@ -171,7 +158,6 @@ function renderDropzones() {
 // Drag and Drop logic
 function handleDragStart(evt) {
   evt.dataTransfer.setData('perk-id', evt.target.dataset.id);
-  // Определяем, из какого dropzone перетаскиваем
   if (evt.target.dataset.source === "dropzone") {
     evt.dataTransfer.setData('levelIdx', evt.target.dataset.level);
   } else {
@@ -186,7 +172,7 @@ function handleDragEnd(evt) {
 // Удаление из уровня
 function removePerkFromLevel(levelIdx, perkId) {
   levelPerks[levelIdx] = levelPerks[levelIdx].filter(id => id !== perkId);
-  saveToLocalStorage(); // Сохраняем изменения
+  saveToServer();
   renderDropzones();
 }
 
@@ -214,30 +200,21 @@ document.getElementById('save-perk-btn').onclick = function() {
   let text = document.getElementById('perk-text').value.trim();
   let color = document.getElementById('perk-color').value;
   if (!text) return alert('Введите текст преимущества!');
-  // Редактирование существующего
   if (window._editingPerkId) {
     let perk = perks.find(p => p.id === window._editingPerkId);
     if (perk) {
       perk.text = text;
       perk.color = color;
     }
-  } else { // Новый
+  } else {
     let newId = Math.max(0, ...perks.map(p => p.id)) + 1;
     perks.push({id: newId, text, color});
   }
-  saveToLocalStorage(); // Сохраняем изменения
+  saveToServer();
   resetPerkForm();
   renderPerksList();
   renderDropzones();
 };
 
-// Загрузка данных при инициализации
-loadFromLocalStorage();
-
-// Показ при загрузке
-renderPerksList();
-renderDropzones();
-
-// Добавляем кнопку для сброса данных (опционально)
-// Можно добавить в HTML: <button onclick="resetToDefaults()">Сбросить к умолчанию</button>
-
+// Инициализация - загрузка данных с сервера
+loadFromServer();

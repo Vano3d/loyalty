@@ -138,6 +138,7 @@ function renderDropzones() {
       zone.classList.add('zone-over');
     };
     zone.ondragleave = () => zone.classList.remove('zone-over');
+    
     zone.ondrop = evt => {
       evt.preventDefault();
       zone.classList.remove('zone-over');

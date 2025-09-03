@@ -367,3 +367,9 @@ td:nth-child(3) {
     margin: 5px 0;
   }
 }
+
+.dropzone.zone-over {
+  border-color: #ea797b;       /* яркий цвет рамки */
+  background-color: #fff0f0;   /* легкий розовый фон */
+  transition: border-color 0.3s, background-color 0.3s;
+}

@@ -1,0 +1,29 @@
+{
+  "perks": [
+  {id: 1, text: "мерч Unicorn", color: "perk-red"},
+  {id: 2, text: "Экскурсия в офис Unicorn", color: "perk-red"},
+  {id: 3, text: "Бесплатный экспресс", color: "perk-red"},
+  {id: 4, text: "Стилист", color: "perk-red"},
+  {id: 5, text: "Персональный менеджер", color: "perk-red"},
+  {id: 6, text: "Безусловный возврат", color: "perk-yellow"},
+  {id: 7, text: "Бесплатная доставка по РФ", color: "perk-yellow"},
+  {id: 8, text: "Подарок на ДР", color: "perk-yellow"},
+  {id: 9, text: "Больше шансов в розыгрышах", color: "perk-yellow"},
+  {id: 10, text: "Повышенный бонус за рефералку 750 р.", color: "perk-yellow"},
+  {id: 11, text: "Повышенный бонус за рефералку 1000 р.", color: "perk-yellow"},
+  {id: 12, text: "Промокод 1000 р.", color: "perk-yellow"},
+  {id: 13, text: "Промокод 1500 р.", color: "perk-yellow"},
+  {id: 14, text: "кэшбек 50 руб.", color: "perk-gray"},
+  {id: 15, text: "кэшбек 150 руб.", color: "perk-gray"},
+  {id: 16, text: "кэшбек 200 руб.", color: "perk-gray"},
+  {id: 17, text: "кэшбек 300 руб.", color: "perk-gray"},
+  {id: 18, text: "кэшбек 400 руб.", color: "perk-gray"}
+],
+  "levelPerks": [
+  [14],                               // Без уровня
+  [15, 10],                           // Новичок
+  [11, 16],                                 // Модник
+  [17, 3, 10],                            // Шопоголик
+  [18]                                  // Фэшн Киллер
+]
+}

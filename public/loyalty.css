@@ -238,7 +238,7 @@ td:nth-child(3) {
   }
   
   .loyalty-builder {
-    flex-direction: column-reverse; /* Перемещаем набор преимуществ вниз */
+    flex-direction: column;
     gap: 20px;
     align-items: stretch;
   }
@@ -246,6 +246,10 @@ td:nth-child(3) {
   table {
     font-size: 16px; /* Увеличен размер шрифта в таблице */
     border-radius: 6px;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    display: block;
   }
   
   th {
@@ -277,8 +281,9 @@ td:nth-child(3) {
   }
   
   .perks-column {
-    min-width: auto;
     width: 100%;
+    min-width: auto;
+    margin-top: 15px;
   }
   
   #perks-list {
@@ -287,12 +292,18 @@ td:nth-child(3) {
   }
   
   .perk {
-    font-size: 16px; /* Увеличен размер шрифта плашек */
-    padding: 8px 16px; /* Увеличен padding для лучшего тапа */
-    margin: 4px 6px 4px 0;
-    min-height: 20px;
-    display: inline-flex;
-    align-items: center;
+    display: block;
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 16px;
+    margin: 6px 0;
+    user-select: none;
+    cursor: grab;
+    user-select: none;  /* Запрет выделения текста */
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none;
+    touch-action: manipulation; /* Улучшает взаимодействие с тач-сенсорным экраном */
   }
   
   .perk .edit, .perk .delete {

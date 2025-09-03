@@ -348,36 +348,122 @@ td:nth-child(3) {
 /* Дополнительные стили для очень маленьких экранов */
 @media (max-width: 480px) {
   body {
-    padding: 10px;
+    padding: 5px;
   }
-  
-  h1 {
-    font-size: 24px;
+
+  .loyalty-builder {
+    flex-direction: column;
+    gap: 8px;
   }
-  
-  h2 {
-    font-size: 20px;
+
+  table {
+    font-size: 14px;
+    border-radius: 4px;
+    width: 100%;
+    /* Делаем таблицу скроллабельной по горизонтали */
+    display: block;
+    max-width: 100vw;
+    overflow-x: auto;
   }
-  
+
   th, td {
-    padding: 10px 8px;
+    padding: 7px 5px;
+    font-size: 14px;
+    /* Если заголовок/ячейка слишком длинные — переносить строки */
+    word-break: break-word;
   }
-  
+
+  th {
+    font-size: 15px;
+    padding: 8px 5px;
+  }
+
+  td:first-child {
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  td:nth-child(3) {
+    width: auto;
+    min-width: 200px;
+    max-width: none;
+    /* Убираем лишние ограничения ширины */
+  }
+
+  .dropzone {
+    min-width: 110px;
+    max-width: 100vw;
+    min-height: 45px;
+    padding: 7px 4px;
+    gap: 4px;
+    box-sizing: border-box;
+  }
+
+  .perks-column {
+    width: 100%;
+    min-width: 0;
+    margin-top: 10px;
+  }
+
+  #perks-list {
+    padding: 7px;
+    margin-bottom: 8px;
+    /* Для скролла при большом числе преимуществ на мини-экране */
+    max-height: 200px;
+    overflow-y: auto;
+  }
+
   .perk {
-    font-size: 15px;
-    padding: 6px 12px;
+    font-size: 14px;
+    padding: 7px 8px;
+    margin: 3px 0;
+    width: 100%;
+    min-height: 20px;
+    box-sizing: border-box;
+    display: block;
+    user-select: none;
   }
-  
+
+  .perk .edit, .perk .delete {
+    font-size: 15px;
+    margin-left: 8px;
+  }
+
+  .in-dropzone .perk .remove {
+    font-size: 17px;
+    margin-left: 8px;
+  }
+
+  #add-perk-btn {
+    font-size: 15px;
+    padding: 8px 12px;
+    margin-top: 10px;
+    width: 100%;
+    text-align: center;
+  }
+
+  #add-perk-form {
+    padding: 10px;
+    margin-top: 10px;
+  }
+
   #add-perk-form input, #add-perk-form select {
-    font-size: 15px;
+    font-size: 14px;
+    padding: 7px 10px;
+    margin: 3px 0;
+    width: 100%;
+    box-sizing: border-box;
   }
-  
+
   #add-perk-form button {
     font-size: 15px;
     width: 100%;
-    margin: 5px 0;
+    margin: 4px 0;
+    padding: 8px 12px;
+    min-width: unset;
   }
 }
+
 
 .dropzone.zone-over {
   border-color: #ea797b;       /* яркий цвет рамки */

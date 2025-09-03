@@ -1,4 +1,3 @@
-
 const SERVER_URL = 'https://loyalty-9zup.onrender.com/data';
 
 // Глобальные переменные для преимуществ и состояний по уровням
@@ -31,6 +30,13 @@ let levelPerks = [
   [18]                // Фэшн Киллер
 ];
 
+// Инициализация массива уровней
+function initLevelPerks() {
+  while (levelPerks.length < 5) {
+    levelPerks.push([]);
+  }
+}
+
 // Загрузка данных с сервера
 async function loadFromServer() {
   try {
@@ -39,11 +45,13 @@ async function loadFromServer() {
     const data = await response.json();
     perks = data.perks;
     levelPerks = data.levelPerks;
+    initLevelPerks();
     renderPerksList();
     renderDropzones();
   } catch (error) {
     console.error('Ошибка загрузки:', error);
     // При ошибке показываем локальные данные
+    initLevelPerks();
     renderPerksList();
     renderDropzones();
   }
@@ -66,15 +74,11 @@ async function saveToServer() {
 function deletePerk(perkId) {
   const perk = perks.find(p => p.id === perkId);
   if (!perk) return;
-  
+
   if (confirm(`Вы уверены, что хотите удалить преимущество "${perk.text}"?\nОно будет удалено из всех уровней.`)) {
-    // Удаляем из основного массива
     perks = perks.filter(p => p.id !== perkId);
-    // Удаляем из всех уровней
     levelPerks = levelPerks.map(level => level.filter(id => id !== perkId));
-    // Сохраняем изменения
     saveToServer();
-    // Перерендериваем интерфейс
     renderPerksList();
     renderDropzones();
   }
@@ -93,7 +97,6 @@ function renderPerksList() {
     el.innerHTML = `${perk.text} <span class="edit" title="Редактировать">&#9998;</span> <span class="delete" title="Удалить">🗑</span>`;
     el.addEventListener('dragstart', handleDragStart);
     el.addEventListener('dragend', handleDragEnd);
-    // Обработчики для кнопок
     el.querySelector('.edit').onclick = (e) => {
       e.stopPropagation();
       openEditPerk(perk.id);
@@ -111,6 +114,7 @@ function renderDropzones() {
   document.querySelectorAll('.dropzone').forEach((zone, idx) => {
     zone.innerHTML = '';
     zone.classList.add('in-dropzone');
+    if (!levelPerks[idx]) levelPerks[idx] = [];
     (levelPerks[idx] || []).forEach(perkId => {
       let perk = perks.find(p => p.id === perkId);
       if (!perk) return;
@@ -129,30 +133,33 @@ function renderDropzones() {
       el.addEventListener('dragend', handleDragEnd);
       zone.appendChild(el);
     });
-    zone.ondragover = evt => { 
-      evt.preventDefault(); 
+    zone.ondragover = evt => {
+      evt.preventDefault();
       zone.classList.add('zone-over');
     };
-    zone.ondragleave = () => { zone.classList.remove('zone-over'); };
+    zone.ondragleave = () => zone.classList.remove('zone-over');
     zone.ondrop = evt => {
       evt.preventDefault();
       zone.classList.remove('zone-over');
-      let perkId = +evt.dataTransfer.getData('perk-id');
-      let fromLevel = evt.dataTransfer.getData('levelIdx');
+      const perkId = +evt.dataTransfer.getData('perk-id');
+      const fromLevel = evt.dataTransfer.getData('levelIdx');
+
+      if (!levelPerks[idx]) levelPerks[idx] = [];
+
       if (fromLevel && fromLevel !== '' && +fromLevel !== idx) {
-        fromLevel = +fromLevel;
-        levelPerks[fromLevel] = levelPerks[fromLevel].filter(id => id !== perkId);
+        const fromIdx = +fromLevel;
+        if (!levelPerks[fromIdx]) levelPerks[fromIdx] = [];
+        levelPerks[fromIdx] = levelPerks[fromIdx].filter(id => id !== perkId);
         if (!levelPerks[idx].includes(perkId)) {
           levelPerks[idx].push(perkId);
         }
-        saveToServer();
-        renderDropzones();
       } else if (!levelPerks[idx].includes(perkId)) {
         levelPerks[idx].push(perkId);
-        saveToServer();
-        renderDropzones();
       }
-    }
+
+      saveToServer();
+      renderDropzones();
+    };
   });
 }
 
@@ -166,12 +173,14 @@ function handleDragStart(evt) {
   }
   evt.target.classList.add('dragging');
 }
+
 function handleDragEnd(evt) {
   evt.target.classList.remove('dragging');
 }
 
 // Удаление из уровня
 function removePerkFromLevel(levelIdx, perkId) {
+  if (!levelPerks[levelIdx]) levelPerks[levelIdx] = [];
   levelPerks[levelIdx] = levelPerks[levelIdx].filter(id => id !== perkId);
   saveToServer();
   renderDropzones();
@@ -186,18 +195,22 @@ function openEditPerk(id) {
   document.getElementById('perk-color').value = perk.color;
   window._editingPerkId = id;
 }
+
 function resetPerkForm() {
   document.getElementById('perk-text').value = '';
   document.getElementById('perk-color').value = 'perk-red';
   window._editingPerkId = null;
   document.getElementById('add-perk-form').style.display = 'none';
 }
+
 document.getElementById('add-perk-btn').onclick = () => {
   resetPerkForm();
   document.getElementById('add-perk-form').style.display = '';
 };
+
 document.getElementById('cancel-perk-btn').onclick = resetPerkForm;
-document.getElementById('save-perk-btn').onclick = function() {
+
+document.getElementById('save-perk-btn').onclick = function () {
   let text = document.getElementById('perk-text').value.trim();
   let color = document.getElementById('perk-color').value;
   if (!text) return alert('Введите текст преимущества!');
@@ -208,8 +221,8 @@ document.getElementById('save-perk-btn').onclick = function() {
       perk.color = color;
     }
   } else {
-    let newId = Math.max(0, ...perks.map(p => p.id)) + 1;
-    perks.push({id: newId, text, color});
+    let newId = perks.length ? Math.max(...perks.map(p => p.id)) + 1 : 1;
+    perks.push({ id: newId, text, color });
   }
   saveToServer();
   resetPerkForm();

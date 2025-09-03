@@ -18,15 +18,15 @@ app.get('/', (req, res) => {
 });
 
 // GET: Получить данные
-// app.get('/data', (req, res) => {
-//   fs.readFile(DATA_FILE, (err, data) => {
-//     if (err) return res.status(500).send('Error');
-//     res.json(JSON.parse(data));
-//   });
-// });
 app.get('/data', (req, res) => {
-  res.json({ perks: [], levelPerks: [] });
+  fs.readFile(DATA_FILE, (err, data) => {
+    if (err) return res.status(500).send('Error');
+    res.json(JSON.parse(data));
+  });
 });
+// app.get('/data', (req, res) => {
+//   res.json({ perks: [], levelPerks: [] });
+// });
 
 
 
